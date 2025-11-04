@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
@@ -7,7 +8,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] InputAction rotation;
     [SerializeField] float force = 1000f;
     [SerializeField] float rotationForce;
+    [SerializeField] UnityEvent OnThrust;
+    [SerializeField] UnityEvent OnStopThrust;
     Rigidbody rb;
+    bool isThrusting;
 
     private void Start()
     {
@@ -40,7 +44,20 @@ public class PlayerMovement : MonoBehaviour
     {
         if (thrust.IsPressed())
         {
+            
             rb.AddRelativeForce(Vector3.up * force * Time.fixedDeltaTime);
+            if (!isThrusting)
+            {
+                OnThrust.Invoke();
+            }
+            isThrusting = true;
+
+        }
+        else
+        {
+            OnStopThrust.Invoke();
+            isThrusting= false;
+
         }
     }
 
